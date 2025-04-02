@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Wallet - DeFi Wallet</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/blockchain-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+ <!-- Header with gradient background -->
+ <div class="blockchain-header">
+   <div class="total-balance">
+     Total Balance: <span class="total-balance-amount" id="totalBalance">US$0.00</span>
+   </div>
+   <div class="tab-selector">
+     <div class="tab-option" data-tab="account" id="accountTab">Account</div>
+     <div class="tab-option active" data-tab="defi" id="defiTab">DeFi Wallet</div>
+   </div>
+ </div>
+
+ <!-- Main content -->
+ <div class="blockchain-content">
+   <!-- User profile section -->
+   <div class="user-profile-section">
+     <button class="profile-button">
+       <i class="fas fa-user"></i>
+     </button>
+     <button class="fullscreen-button">
+       <i class="fas fa-expand"></i>
+     </button>
+   </div>
+
+   <!-- Portfolio section -->
+   <div class="portfolio-section">
+     <div class="portfolio-label">Portfolio</div>
+     <div class="portfolio-amount">
+       US$0.00
+       <button class="visibility-toggle">
+         <i class="far fa-eye"></i>
+       </button>
+     </div>
+   </div>
+
+   <!-- Action buttons -->
+   <div class="defi-actions">
+     <div class="defi-action-button" id="depositBtn">
+       <div class="action-icon">
+         <i class="fas fa-arrow-down"></i>
+       </div>
+       <div class="action-label">Deposit</div>
+     </div>
+     <div class="defi-action-button" id="swapBtn">
+       <div class="action-icon">
+         <i class="fas fa-exchange-alt"></i>
+       </div>
+       <div class="action-label">Swap</div>
+     </div>
+     <div class="defi-action-button" id="sellBtn">
+       <div class="action-icon">
+         <i class="fas fa-minus"></i>
+       </div>
+       <div class="action-label">Sell</div>
+     </div>
+     <div class="defi-action-button" id="sendBtn">
+       <div class="action-icon">
+         <i class="fas fa-arrow-up"></i>
+       </div>
+       <div class="action-label">Send</div>
+     </div>
+   </div>
+
+   <!-- Security card -->
+   <div class="blockchain-card security-card">
+     <div class="security-icon">
+       <i class="fas fa-lock"></i>
+     </div>
+     <div class="security-content">
+       <div class="security-label">Secure your wallets</div>
+       <div class="security-message">Backup your Recovery Phrase to keep your DeFi Wallet safe</div>
+     </div>
+   </div>
+
+   <!-- Get started card -->
+   <div class="blockchain-card get-started-card">
+     <div class="get-started-icon">
+       <img src="img/deposit-icon.png" alt="Deposit" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%230c6cf2\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12l4 4 4-4M12 8v8\'/></svg>'">
+     </div>
+     <div class="get-started-title">To get started, deposit crypto to your DeFi Wallet</div>
+     <div class="get-started-subtitle">Transfer from your Blockchain.com Account, send from any exchange, or receive from a friend!</div>
+     <button class="deposit-crypto-btn" id="depositCryptoBtn">Deposit Crypto</button>
+   </div>
+
+   <!-- Connected Apps section -->
+   <div class="section-header">
+     <div class="section-title">Connected Apps</div>
+   </div>
+   <div class="blockchain-card connected-app-card">
+     <div class="connected-app-icon">
+       <img src="img/wallet-connect.png" alt="WalletConnect" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%230c6cf2\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><path d=\'M6 9l6 6 6-6\'/></svg>'">
+     </div>
+     <div class="connected-app-info">
+       <div class="connected-app-name">WalletConnect</div>
+       <div class="connected-app-description">Connect your wallet to dApps</div>
+     </div>
+     <div class="connected-app-toggle">
+       <div class="toggle-switch"></div>
+     </div>
+   </div>
+
+   <!-- Top Movers section -->
+   <div class="token-section">
+     <div class="section-header">
+       <div class="section-title">Top Movers <i class="fas fa-fire"></i></div>
+       <a href="#" class="see-all">See All</a>
+     </div>
+     <div class="movers-grid">
+       <div class="mover-card">
+         <div class="mover-icon">
+           <img src="img/mask-token.png" alt="MASK" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%230c6cf2\' stroke=\'%23ffffff\' stroke-width=\'2\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M9 12h6\'/></svg>'">
+         </div>
+         <div class="mover-name">MASK</div>
+         <div class="mover-price">US$1.39</div>
+         <div class="mover-change negative">↓ 34.05%</div>
+         <div class="mover-chart"></div>
+       </div>
+       <div class="mover-card">
+         <div class="mover-icon">
+           <img src="img/eos-token.png" alt="EOS" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23000000\' stroke=\'%23ffffff\' stroke-width=\'2\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M9 12h6\'/></svg>'">
+         </div>
+         <div class="mover-name">EOS</div>
+         <div class="mover-price">US$0.81</div>
+         <div class="mover-change positive">↑ 18.88%</div>
+         <div class="mover-chart positive"></div>
+       </div>
+       <div class="mover-card">
+         <div class="mover-icon">
+           <img src="img/dexe-token.png" alt="DEXE" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23000000\' stroke=\'%23ffffff\' stroke-width=\'2\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M9 12h6\'/></svg>'">
+         </div>
+         <div class="mover-name">DEXE</div>
+         <div class="mover-price">US$14.83</div>
+         <div class="mover-change negative">↓ 18.41%</div>
+         <div class="mover-chart"></div>
+       </div>
+     </div>
+   </div>
+
+  <!-- Activity section -->
+    <div class="token-section">
+      <div class="section-header">
+        <div class="section-title">Activity</div>
+        <a href="transactions.html" class="see-all">See all</a>
+      </div>
+      <div class="token-list" id="activityList">
+        <!-- Activity items will be loaded here -->
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fas fa-arrow-down"></i>
+          </div>
+              <div class="transactions-list" id="transactionsList">
+      <!-- Transactions will be loaded here -->
+      <div class="loading-spinner" id="transactionsLoading">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+    </div>
+    
+    <div id="noTransactions" class="no-data hidden">
+      <p>No transactions found</p>
+    </div>
+  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  
+ <!-- Bottom navigation -->
+ <div class="blockchain-nav">
+   <a href="dashboard.html" class="nav-item active">
+     <i class="fas fa-home"></i>
+     <span>Home</span>
+   </a>
+   <a href="#" class="nav-item" id="pricesBtn">
+     <i class="fas fa-chart-line"></i>
+     <span>Prices</span>
+   </a>
+   <a href="#" class="nav-item" id="dexBtn">
+     <i class="fas fa-exchange-alt"></i>
+     <span>DEX</span>
+   </a>
+  <a href="profile.html" class="nav-item">
+    <i class="fas fa-user"></i>
+    <span>Profile</span>
+    </a>
+  </div>
+</div>
+
+<!-- Token selection modal -->
+<div class="token-modal" id="tokenModal">
+ <div class="token-modal-content">
+   <div class="token-modal-header">
+     <div class="token-modal-title">Select Token</div>
+     <button class="token-modal-close" id="closeTokenModal">
+       <i class="fas fa-times"></i>
+     </button>
+   </div>
+   <div class="token-modal-body">
+     <div class="token-modal-item" data-token="MAIN">
+       <div class="token-icon">
+         <img src="img/blockchain.png" alt="Main Wallet">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">Main Wallet</div>
+         <div class="token-modal-symbol">MAIN</div>
+       </div>
+       <div class="token-modal-balance" id="mainBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="TRX">
+       <div class="token-icon">
+         <img src="img/trx.png" alt="TRON">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">TRON</div>
+         <div class="token-modal-symbol">TRX</div>
+       </div>
+       <div class="token-modal-balance" id="trxBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="USDT">
+       <div class="token-icon">
+         <img src="img/usdt.png" alt="Tether">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">Tether</div>
+         <div class="token-modal-symbol">USDT</div>
+       </div>
+       <div class="token-modal-balance" id="usdtBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="USDC">
+       <div class="token-icon">
+         <img src="img/usdc.png" alt="USD Coin">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">USD Coin</div>
+         <div class="token-modal-symbol">USDC</div>
+       </div>
+       <div class="token-modal-balance" id="usdcBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="BNB">
+       <div class="token-icon">
+         <img src="img/bnb.png" alt="BNB">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">BNB Smart Chain</div>
+         <div class="token-modal-symbol">BNB</div>
+       </div>
+       <div class="token-modal-balance" id="bnbBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="SOL">
+       <div class="token-icon">
+         <img src="img/sol.png" alt="Solana">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">Solana</div>
+         <div class="token-modal-symbol">SOL</div>
+       </div>
+       <div class="token-modal-balance" id="solBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="ETH">
+       <div class="token-icon">
+         <img src="img/eth.png" alt="Ethereum">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">Ethereum</div>
+         <div class="token-modal-symbol">ETH</div>
+       </div>
+       <div class="token-modal-balance" id="ethBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="BTC">
+       <div class="token-icon">
+         <img src="img/btc.png" alt="Bitcoin">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">Bitcoin</div>
+         <div class="token-modal-symbol">BTC</div>
+       </div>
+       <div class="token-modal-balance" id="btcBalance">US$0.00</div>
+     </div>
+     <div class="token-modal-item" data-token="POL">
+       <div class="token-icon">
+         <img src="img/pol.png" alt="Polygon">
+       </div>
+       <div class="token-modal-info">
+         <div class="token-modal-name">Polygon</div>
+         <div class="token-modal-symbol">POL</div>
+       </div>
+       <div class="token-modal-balance" id="polBalance">US$0.00</div>
+     </div>
+   </div>
+ </div>
+</div>
+
+<!-- Coming Soon Modal -->
+<div class="modal" id="comingSoonModal">
+ <div class="modal-content">
+   <div class="modal-header">
+     <h3>Coming Soon</h3>
+     <button class="close-modal">&times;</button>
+   </div>
+   <div class="modal-body">
+     <div class="coming-soon-content">
+       <i class="fas fa-rocket"></i>
+       <p>This feature is coming soon!</p>
+       <p class="coming-soon-subtitle">We're working hard to bring you this feature. Stay tuned for updates.</p>
+     </div>
+   </div>
+ </div>
+</div>
+
+<script src="js/defi-wallet.js"></script>
+<script src="js/blockchain-dashboard.js"></script>
+</body>
+</html>
+

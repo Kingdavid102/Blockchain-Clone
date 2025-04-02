@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Wallet - Dashboard</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/blockchain-style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container">
+  <!-- Header with gradient background -->
+  <div class="blockchain-header">
+    <div class="total-balance">
+      Total Balance: <span class="total-balance-amount" id="totalBalance">US$0.00</span>
+    </div>
+    <div class="tab-selector">
+      <div class="tab-option active" data-tab="account">Account</div>
+      <div class="tab-option" data-tab="defi" id="defiWalletTab">DeFi Wallet</div>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="blockchain-content">
+    <!-- Welcome card -->
+    <div class="blockchain-card welcome-card">
+      <div class="welcome-emoji">👋</div>
+      <div class="welcome-title">Welcome to Blockchain.com</div>
+    </div>
+
+    <!-- Stablecoins section -->
+    <div class="token-section">
+      <div class="section-header">
+        <div class="section-title">Stablecoins <i class="fas fa-question-circle"></i></div>
+      </div>
+      <div class="token-list">
+        <div class="token-item" data-token="USDC">
+          <div class="token-icon">
+            <img src="img/usdc.png" alt="USD Coin">
+          </div>
+          <div class="token-info">
+            <div class="token-name">USD Coin</div>
+          </div>
+          <div class="token-price">
+            <div class="token-amount">US$0.00</div>
+            <div class="token-change positive">0.00%</div>
+          </div>
+        </div>
+        <div class="token-item" data-token="USDT">
+          <div class="token-icon">
+            <img src="img/usdt.png" alt="Tether">
+          </div>
+          <div class="token-info">
+            <div class="token-name">Tether</div>
+          </div>
+          <div class="token-price">
+            <div class="token-amount">US$0.00</div>
+            <div class="token-change positive">↑ 0.02%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Movers section -->
+    <div class="token-section">
+      <div class="section-header">
+        <div class="section-title">Top Movers <i class="fas fa-fire"></i></div>
+        <a href="#" class="see-all">See All</a>
+      </div>
+      <div class="movers-grid">
+        <div class="mover-card">
+          <div class="token-icon">
+            <img src="img/btc.png" alt="Bitcoin">
+          </div>
+          <div class="mover-name">BTC</div>
+          <div class="mover-price">US$85,143.49</div>
+          <div class="mover-change negative">↓ 3.20%</div>
+          <div class="mover-chart"></div>
+        </div>
+        <div class="mover-card">
+          <div class="token-icon">
+            <img src="img/eth.png" alt="Ethereum">
+          </div>
+          <div class="mover-name">ETH</div>
+          <div class="mover-price">US$1,902.43</div>
+          <div class="mover-change positive">↑ 4.35%</div>
+          <div class="mover-chart positive"></div>
+        </div>
+        <div class="mover-card">
+          <div class="token-icon">
+            <img src="img/sol.png" alt="Solana">
+          </div>
+          <div class="mover-name">SOL</div>
+          <div class="mover-price">US$126.54</div>
+          <div class="mover-change positive">↑ 1.41%</div>
+          <div class="mover-chart positive"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity section -->
+    <div class="token-section">
+      <div class="section-header">
+        <div class="section-title">Activity</div>
+        <a href="transactions.html" class="see-all">See all</a>
+      </div>
+      <div class="token-list" id="activityList">
+        <!-- Activity items will be loaded here -->
+        <div class="activity-item">
+          <div class="activity-icon">
+            <i class="fas fa-arrow-down"></i>
+          </div>
+              <div class="transactions-list" id="transactionsList">
+      <!-- Transactions will be loaded here -->
+      <div class="loading-spinner" id="transactionsLoading">
+        <i class="fas fa-spinner fa-spin"></i>
+      </div>
+    </div>
+    
+    <div id="noTransactions" class="no-data hidden">
+      <p>No transactions found</p>
+    </div>
+  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+
+  <!-- Bottom navigation -->
+  <div class="blockchain-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#" class="nav-item" id="pricesBtn">
+      <i class="fas fa-chart-line"></i>
+      <span>Prices</span>
+    </a>
+    <a href="#" class="nav-item" id="dexBtn">
+      <i class="fas fa-exchange-alt"></i>
+      <span>DEX</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+    <i class="fas fa-user"></i>
+    <span>Profile</span>
+    </a>
+  </div>
+</div>
+
+<!-- Coming Soon Modal -->
+<div class="modal" id="comingSoonModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Coming Soon</h3>
+      <button class="close-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="coming-soon-content">
+        <i class="fas fa-rocket"></i>
+        <p>This feature is coming soon!</p>
+        <p class="coming-soon-subtitle">We're working hard to bring you this feature. Stay tuned for updates.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="js/blockchain-dashboard.js"></script>
+<script src="js/transactions.js"></script>
+</body>
+</html>
+
