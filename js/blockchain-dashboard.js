@@ -9,12 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return
   }
 
-  // Apply dark mode if enabled
-  const isDarkMode = localStorage.getItem("darkMode") === "true"
-  if (isDarkMode) {
-    document.body.classList.add("dark-mode")
-  }
-
   // Load user data and balances
   loadUserData()
   loadTransactions()
