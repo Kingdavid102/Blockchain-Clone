@@ -1,4 +1,4 @@
-# CryptoWallet Simulator by EmmyHenz
+# 💫BlockChain Clone by EmmyHenz
 
 ![CryptoWallet Simulator](https://img.shields.io/badge/Status-Active-brightgreen) 
 ![License](https://img.shields.io/badge/License-Paid%20Proprietary-blue) 
@@ -40,7 +40,7 @@ A **realistic fake cryptocurrency wallet simulator** designed for developers, ed
 ### Steps  
 1. **Clone the repository** (access provided after purchase):  
    ```bash  
-   git clone https://github.com/yummi184/Fake-Crypto-Wallet/new/main?filename=README.md
+   git clone https://github.com/yummi184/Blockchain-Clone.git
    ```  
 2. Install dependencies:  
    ```bash  
