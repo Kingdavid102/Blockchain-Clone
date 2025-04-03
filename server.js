@@ -209,7 +209,7 @@ app.post("/api/auth/login", (req, res) => {
   }
 
   // Create token
-  const token = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, JWT_SECRET, { expiresIn: "24h" })
+  const token = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, JWT_SECRET, { expiresIn: "21233444455667754554444432222211112222h" })
 
   // Return user data (without password)
   const { password: _, ...userWithoutPassword } = user
@@ -632,6 +632,35 @@ app.post("/api/transactions/fund-token", authenticateToken, (req, res) => {
   writeJSONFile(TRANSACTIONS_FILE, transactions)
 
   res.json({ success: true, message: `${tokenType} wallet funded successfully` })
+})
+
+// Add this route to your server.js file, after your existing routes
+// This will provide a profile endpoint that returns the current user data
+
+app.get("/api/users/profile", authenticateToken, (req, res) => {
+  const userId = req.user.id
+  const users = readJSONFile(USERS_FILE)
+  const user = users.find((user) => user.id === userId)
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" })
+  }
+
+  // Return user data without password
+  const { password, ...userWithoutPassword } = user
+  res.json({ success: true, user: userWithoutPassword })
+})
+
+// Add a notifications endpoint (this won't actually send real notifications,
+// but it will simulate the server receiving the notification request)
+app.post("/api/notifications/send", authenticateToken, (req, res) => {
+  const { recipientAddress, tokenType, amount, message } = req.body
+
+  // In a real app, this would trigger a WebSocket message or push notification
+  console.log(`Notification for ${recipientAddress}: ${message}`)
+
+  // Just return success for now
+  res.json({ success: true, message: "Notification sent" })
 })
 
 // Serve HTML files
