@@ -13,6 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadUserData()
   loadTransactions()
 
+  // Set up polling for balance updates - check every 10 seconds
+  setInterval(() => {
+    refreshBalances()
+  }, 10000)
+
   // Tab switching
   const accountTab = document.getElementById("accountTab")
   if (accountTab) {
@@ -74,57 +79,35 @@ document.addEventListener("DOMContentLoaded", () => {
   let isBalanceHidden = false
 
   if (visibilityToggle && portfolioAmount) {
-    visibilityToggle.addEventListener("click", () => {
-      isBalanceHidden = !isBalanceHidden
+    visibilityToggle.addEventListener("click", toggleBalanceVisibility)
+  }
 
-      if (isBalanceHidden) {
-        // Hide balance with asterisks
-        portfolioAmount.innerHTML = `
-          US$****
-          <button class="visibility-toggle">
-            <i class="far fa-eye-slash"></i>
-          </button>
-        `
-      } else {
-        // Show actual balance
-        portfolioAmount.innerHTML = `
-          US$${formatNumber(currentUser.balance || 0)}
-          <button class="visibility-toggle">
-            <i class="far fa-eye"></i>
-          </button>
-        `
-      }
+  function toggleBalanceVisibility() {
+    isBalanceHidden = !isBalanceHidden
 
-      // Re-attach event listener to the new button
-      const newToggleBtn = portfolioAmount.querySelector(".visibility-toggle")
-      if (newToggleBtn) {
-        newToggleBtn.addEventListener("click", () => {
-          isBalanceHidden = !isBalanceHidden
+    if (isBalanceHidden) {
+      // Hide balance with asterisks
+      portfolioAmount.innerHTML = `
+        US$****
+        <button class="visibility-toggle">
+          <i class="far fa-eye-slash"></i>
+        </button>
+      `
+    } else {
+      // Show actual balance
+      portfolioAmount.innerHTML = `
+        US$${formatNumber(currentUser.balance || 0)}
+        <button class="visibility-toggle">
+          <i class="far fa-eye"></i>
+        </button>
+      `
+    }
 
-          if (isBalanceHidden) {
-            portfolioAmount.innerHTML = `
-              US$****
-              <button class="visibility-toggle">
-                <i class="far fa-eye-slash"></i>
-              </button>
-            `
-          } else {
-            portfolioAmount.innerHTML = `
-              US$${formatNumber(currentUser.balance || 0)}
-              <button class="visibility-toggle">
-                <i class="far fa-eye"></i>
-              </button>
-            `
-          }
-
-          // Re-attach event listener again
-          const newestToggleBtn = portfolioAmount.querySelector(".visibility-toggle")
-          if (newestToggleBtn) {
-            newestToggleBtn.addEventListener("click", visibilityToggle.onclick)
-          }
-        })
-      }
-    })
+    // Re-attach event listener to the new button
+    const newToggleBtn = portfolioAmount.querySelector(".visibility-toggle")
+    if (newToggleBtn) {
+      newToggleBtn.addEventListener("click", toggleBalanceVisibility)
+    }
   }
 
   // Bottom navigation handlers
@@ -176,6 +159,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <i class="far fa-eye"></i>
         </button>
       `
+
+      // Attach event listener to the visibility toggle
+      const visibilityToggle = portfolioAmount.querySelector(".visibility-toggle")
+      if (visibilityToggle) {
+        visibilityToggle.addEventListener("click", toggleBalanceVisibility)
+      }
     }
 
     // Update token balances in modal
@@ -188,6 +177,67 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTokenBalance("ethBalance", currentUser.ethBalance || 0)
     updateTokenBalance("btcBalance", currentUser.btcBalance || 0)
     updateTokenBalance("polBalance", currentUser.polBalance || 0)
+  }
+
+  // Function to refresh balances from the server
+  function refreshBalances() {
+    fetch("/api/users/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Update the current user data in localStorage
+          const updatedUser = data.user
+
+          // Only update if there are actual changes to avoid unnecessary re-renders
+          if (JSON.stringify(updatedUser) !== JSON.stringify(currentUser)) {
+            localStorage.setItem("currentUser", JSON.stringify(updatedUser))
+
+            // Update the UI with new balance if not hidden
+            const totalBalanceElement = document.getElementById("totalBalance")
+            if (totalBalanceElement) {
+              totalBalanceElement.textContent = `US$${formatNumber(updatedUser.balance || 0)}`
+            }
+
+            // Update portfolio amount if not hidden
+            const portfolioAmount = document.querySelector(".portfolio-amount")
+            if (portfolioAmount && !isBalanceHidden) {
+              portfolioAmount.innerHTML = `
+                US$${formatNumber(updatedUser.balance || 0)}
+                <button class="visibility-toggle">
+                  <i class="far fa-eye"></i>
+                </button>
+              `
+
+              // Re-attach event listener
+              const newToggleBtn = portfolioAmount.querySelector(".visibility-toggle")
+              if (newToggleBtn) {
+                newToggleBtn.addEventListener("click", toggleBalanceVisibility)
+              }
+            }
+
+            // Update token balances in modal
+            updateTokenBalance("mainBalance", updatedUser.balance || 0)
+            updateTokenBalance("trxBalance", updatedUser.trxBalance || 0)
+            updateTokenBalance("usdtBalance", updatedUser.usdtBalance || 0)
+            updateTokenBalance("usdcBalance", updatedUser.usdcBalance || 0)
+            updateTokenBalance("bnbBalance", updatedUser.bnbBalance || 0)
+            updateTokenBalance("solBalance", updatedUser.solBalance || 0)
+            updateTokenBalance("ethBalance", updatedUser.ethBalance || 0)
+            updateTokenBalance("btcBalance", updatedUser.btcBalance || 0)
+            updateTokenBalance("polBalance", updatedUser.polBalance || 0)
+
+            // Refresh transactions
+            loadTransactions()
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error refreshing balances:", error)
+      })
   }
 
   function updateTokenBalance(elementId, balance) {

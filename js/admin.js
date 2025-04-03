@@ -194,58 +194,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const recipientAddress = document.getElementById("recipientAddress").value
       const fundAmount = document.getElementById("fundAmount").value
       const tokenType = document.getElementById("tokenType").value
-      const errorElement = document.getElementById("fundError")
 
-      // Clear previous errors
-      errorElement.textContent = ""
-
-      // Validate amount
-      if (Number.parseFloat(fundAmount) <= 0) {
-        errorElement.textContent = "Amount must be greater than 0"
-        return
-      }
-
-      // Make API request to fund user
-      fetch("/api/admin/fund-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          recipientAddress,
-          amount: Number.parseFloat(fundAmount),
-          tokenType,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            // Close modal
-            document.getElementById("fundUserModal").classList.remove("active")
-
-            // Show receipt
-            showReceipt({
-              type: "admin-funding",
-              amount: Number.parseFloat(fundAmount),
-              token: tokenType,
-              recipient: recipientAddress,
-              date: new Date().toISOString(),
-              txId: data.transactionId || generateTxId(),
-            })
-
-            // Reload users to show updated balance
-            loadUsers()
-            // Reload transactions to show the funding transaction
-            loadTransactions()
-          } else {
-            errorElement.textContent = data.message || "Failed to fund user"
-          }
-        })
-        .catch((error) => {
-          errorElement.textContent = "An error occurred. Please try again."
-          console.error("Fund user error:", error)
-        })
+      // Call the new function instead of the inline code
+      fundUser(recipientAddress, fundAmount, tokenType)
     })
   }
 
@@ -463,6 +414,99 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           noUsers.classList.remove("hidden")
         }
+      })
+  }
+
+  // Add this function to the existing admin.js file, inside the DOMContentLoaded event handler
+  // Place it after the loadUsers() function
+
+  function fundUser(recipientAddress, fundAmount, tokenType) {
+    const errorElement = document.getElementById("fundError")
+
+    // Clear previous errors
+    if (errorElement) {
+      errorElement.textContent = ""
+    }
+
+    // Validate amount
+    if (Number.parseFloat(fundAmount) <= 0) {
+      if (errorElement) {
+        errorElement.textContent = "Amount must be greater than 0"
+      }
+      return
+    }
+
+    // Make API request to fund user
+    fetch("/api/admin/fund-user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        recipientAddress,
+        amount: Number.parseFloat(fundAmount),
+        tokenType,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Close modal
+          document.getElementById("fundUserModal").classList.remove("active")
+
+          // Show receipt
+          showReceipt({
+            type: "admin-funding",
+            amount: Number.parseFloat(fundAmount),
+            token: tokenType,
+            recipient: recipientAddress,
+            date: new Date().toISOString(),
+            txId: data.transactionId || generateTxId(),
+          })
+
+          // Reload users to show updated balance
+          loadUsers()
+          // Reload transactions to show the funding transaction
+          loadTransactions()
+
+          // Send notification to the user
+          sendNotificationToUser(recipientAddress, tokenType, fundAmount)
+        } else {
+          if (errorElement) {
+            errorElement.textContent = data.message || "Failed to fund user"
+          }
+        }
+      })
+      .catch((error) => {
+        if (errorElement) {
+          errorElement.textContent = "An error occurred. Please try again."
+        }
+        console.error("Fund user error:", error)
+      })
+  }
+
+  // Add this function to send a notification to the user
+  function sendNotificationToUser(recipientAddress, tokenType, amount) {
+    fetch("/api/notifications/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        recipientAddress,
+        tokenType,
+        amount,
+        message: `You have received ${amount} ${tokenType} from Admin`,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Notification sent:", data)
+      })
+      .catch((error) => {
+        console.error("Error sending notification:", error)
       })
   }
 

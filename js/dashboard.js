@@ -15,6 +15,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark-mode")
   }
 
+  // Load user data and balances
+  loadUserData()
+  loadTransactions()
+
+  // Set up polling for balance updates - check every 10 seconds
+  setInterval(() => {
+    refreshBalances()
+  }, 10000)
+
+  // DeFi Wallet tab click handler
+  const defiWalletTab = document.getElementById("defiWalletTab")
+  if (defiWalletTab) {
+    defiWalletTab.addEventListener("click", () => {
+      window.location.href = "defi-wallet.html"
+    })
+  }
+
   // Load user data
   const walletName = document.getElementById("walletName")
   const trxWalletAddress = document.getElementById("trxWalletAddress")
@@ -101,122 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadBalance()
 
   // Load tokens
-  loadTokens()
-
-  // Toggle balance visibility
-  const toggleBalanceBtn = document.getElementById("toggleBalanceBtn")
-  if (toggleBalanceBtn) {
-    toggleBalanceBtn.addEventListener("click", () => {
-      if (balanceAmount.textContent === "****") {
-        loadBalance()
-        toggleBalanceBtn.innerHTML = '<i class="fas fa-eye"></i>'
-      } else {
-        balanceAmount.textContent = "****"
-        toggleBalanceBtn.innerHTML = '<i class="fas fa-eye-slash"></i>'
-      }
-    })
-  }
-
-  // Logout button
-  const logoutBtn = document.getElementById("logoutBtn")
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      // Clear user data from localStorage
-      localStorage.removeItem("currentUser")
-      localStorage.removeItem("token")
-
-      // Redirect to login page
-      window.location.href = "index.html"
-    })
-  }
-
-  // Tab switching
-  const tabButtons = document.querySelectorAll(".tab-btn")
-  const tabContents = document.querySelectorAll(".tab-content")
-
-  tabButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      // Remove active class from all buttons and contents
-      tabButtons.forEach((btn) => btn.classList.remove("active"))
-      tabContents.forEach((content) => content.classList.remove("active"))
-
-      // Add active class to clicked button
-      this.classList.add("active")
-
-      // Show corresponding tab content
-      const tabId = this.getAttribute("data-tab") + "-tab"
-      document.getElementById(tabId).classList.add("active")
-    })
-  })
-
-  // Coming soon features
-  const earnBtn = document.getElementById("earnBtn")
-  const getGasBtn = document.getElementById("getGasBtn")
-  const marketsBtn = document.getElementById("marketsBtn")
-  const tradeBtn = document.getElementById("tradeBtn")
-  const discoverBtn = document.getElementById("discoverBtn")
-  const comingSoonModal = document.getElementById("comingSoonModal")
-
-  const comingSoonFeatures = [earnBtn, getGasBtn, marketsBtn, tradeBtn, discoverBtn]
-
-  comingSoonFeatures.forEach((btn) => {
-    if (btn) {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault()
-        comingSoonModal.classList.add("active")
-      })
-    }
-  })
-
-  // Close modals
-  const closeModalButtons = document.querySelectorAll(".close-modal")
-  closeModalButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelectorAll(".modal").forEach((modal) => {
-        modal.classList.remove("active")
-      })
-    })
-  })
-
-  // Backup button
-  const backupBtn = document.getElementById("backupBtn")
-  if (backupBtn) {
-    backupBtn.addEventListener("click", () => {
-      comingSoonModal.classList.add("active")
-    })
-  }
-
-  // Manage tokens button
-  const manageTokensBtn = document.getElementById("manageTokensBtn")
-  if (manageTokensBtn) {
-    manageTokensBtn.addEventListener("click", () => {
-      comingSoonModal.classList.add("active")
-    })
-  }
-
-  // Helper functions
-  function loadBalance() {
-    if (!balanceAmount) return
-
-    fetch("/api/users/balance", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          balanceAmount.textContent = `$${formatNumber(data.balance)}`
-        } else {
-          balanceAmount.textContent = "$0.00"
-        }
-      })
-      .catch((error) => {
-        console.error("Error loading balance:", error)
-        balanceAmount.textContent = "$0.00"
-      })
-  }
-
   function loadTokens() {
     const tokenList = document.getElementById("tokenList")
     if (!tokenList) return
@@ -274,6 +175,136 @@ document.addEventListener("DOMContentLoaded", () => {
           const tokenItem = createTokenItem(token)
           tokenList.appendChild(tokenItem)
         })
+      })
+  }
+
+  // Toggle balance visibility
+  const toggleBalanceBtn = document.getElementById("toggleBalanceBtn")
+  if (toggleBalanceBtn) {
+    toggleBalanceBtn.addEventListener("click", () => {
+      if (balanceAmount.textContent === "****") {
+        loadBalance()
+        toggleBalanceBtn.innerHTML = '<i class="fas fa-eye"></i>'
+      } else {
+        balanceAmount.textContent = "****"
+        toggleBalanceBtn.innerHTML = '<i class="fas fa-eye-slash"></i>'
+      }
+    })
+  }
+
+  // Logout button
+  const logoutBtn = document.getElementById("logoutBtn")
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      // Clear user data from localStorage
+      localStorage.removeItem("currentUser")
+      localStorage.removeItem("token")
+
+      // Redirect to login page
+      window.location.href = "index.html"
+    })
+  }
+
+  // Tab switching
+  const tabButtons = document.querySelectorAll(".tab-btn")
+  const tabContents = document.querySelectorAll(".tab-content")
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      // Remove active class from all buttons and contents
+      tabButtons.forEach((btn) => btn.classList.remove("active"))
+      tabContents.forEach((content) => content.classList.remove("active"))
+
+      // Add active class to clicked button
+      this.classList.add("active")
+
+      // Show corresponding tab content
+      const tabId = this.getAttribute("data-tab") + "-tab"
+      document.getElementById(tabId).classList.add("active")
+    })
+  })
+
+  // Coming soon features
+  const earnBtn = document.getElementById("earnBtn")
+  const getGasBtn = document.getElementById("getGasBtn")
+  const marketsBtn = document.getElementById("marketsBtn")
+  const tradeBtn = document.getElementById("tradeBtn")
+  const discoverBtn = document.getElementById("discoverBtn")
+  const pricesBtn = document.getElementById("pricesBtn")
+  const dexBtn = document.getElementById("dexBtn")
+  const nftsBtn = document.getElementById("nftsBtn")
+  const comingSoonModal = document.getElementById("comingSoonModal")
+
+  const comingSoonFeatures = [earnBtn, getGasBtn, marketsBtn, tradeBtn, discoverBtn]
+
+  comingSoonFeatures
+    .forEach((btn) => {
+      if (btn) {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault()
+          comingSoonModal.classList.add("active")
+        })
+      }
+    })
+
+    [
+      // Bottom navigation handlers
+      (pricesBtn, dexBtn, nftsBtn)
+    ].forEach((btn) => {
+      if (btn) {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault()
+          comingSoonModal.classList.add("active")
+        })
+      }
+    })
+
+  // Close modals
+  const closeModalButtons = document.querySelectorAll(".close-modal")
+  closeModalButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".modal").forEach((modal) => {
+        modal.classList.remove("active")
+      })
+    })
+  })
+
+  // Backup button
+  const backupBtn = document.getElementById("backupBtn")
+  if (backupBtn) {
+    backupBtn.addEventListener("click", () => {
+      comingSoonModal.classList.add("active")
+    })
+  }
+
+  // Manage tokens button
+  const manageTokensBtn = document.getElementById("manageTokensBtn")
+  if (manageTokensBtn) {
+    manageTokensBtn.addEventListener("click", () => {
+      comingSoonModal.classList.add("active")
+    })
+  }
+
+  // Helper functions
+  function loadBalance() {
+    if (!balanceAmount) return
+
+    fetch("/api/users/balance", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          balanceAmount.textContent = `$${formatNumber(data.balance)}`
+        } else {
+          balanceAmount.textContent = "$0.00"
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading balance:", error)
+        balanceAmount.textContent = "$0.00"
       })
   }
 
@@ -486,6 +517,110 @@ document.addEventListener("DOMContentLoaded", () => {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })
+  }
+
+  function loadUserData() {
+    // Update total balance
+    const totalBalanceElement = document.getElementById("totalBalance")
+    if (totalBalanceElement) {
+      totalBalanceElement.textContent = `US$${formatNumber(currentUser.balance || 0)}`
+    }
+  }
+
+  // Function to refresh balances from the server
+  function refreshBalances() {
+    fetch("/api/users/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          // Update the current user data in localStorage
+          const updatedUser = data.user
+
+          // Only update if there are actual changes to avoid unnecessary re-renders
+          if (JSON.stringify(updatedUser) !== JSON.stringify(currentUser)) {
+            localStorage.setItem("currentUser", JSON.stringify(updatedUser))
+
+            // Update the UI with new balance
+            const totalBalanceElement = document.getElementById("totalBalance")
+            if (totalBalanceElement) {
+              totalBalanceElement.textContent = `US$${formatNumber(updatedUser.balance || 0)}`
+            }
+
+            // Refresh token list if it exists
+            const tokenList = document.getElementById("tokenList")
+            if (tokenList) {
+              loadTokens()
+            }
+          }
+        }
+      })
+      .catch((error) => {
+        console.error("Error refreshing balances:", error)
+      })
+  }
+
+  function loadTransactions() {
+    fetch("/api/transactions", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success && data.transactions.length > 0) {
+          // Get the activity list element
+          const activityList = document.getElementById("activityList")
+          if (!activityList) return
+
+          // Clear existing items
+          activityList.innerHTML = ""
+
+          // Display the most recent 3 transactions
+          const recentTransactions = data.transactions.slice(0, 3)
+
+          recentTransactions.forEach((transaction) => {
+            const activityItem = createActivityItem(transaction)
+            activityList.appendChild(activityItem)
+          })
+        }
+      })
+      .catch((error) => {
+        console.error("Error loading transactions:", error)
+      })
+  }
+
+  function createActivityItem(transaction) {
+    const div = document.createElement("div")
+    div.className = "activity-item"
+
+    const isReceived = transaction.type === "received"
+    const iconClass = isReceived ? "fa-arrow-down" : "fa-arrow-up"
+
+    div.innerHTML = `
+      <div class="activity-icon">
+        <i class="fas ${iconClass}"></i>
+      </div>
+      <div class="activity-info">
+        <div class="activity-type">${isReceived ? "Received" : "Sent"} ${transaction.token}</div>
+        <div class="activity-date">${formatDate(transaction.date)}</div>
+        <div class="activity-hash">${transaction.id}</div>
+      </div>
+      <div class="activity-amount">US$${formatNumber(transaction.amount)}</div>
+    `
+
+    return div
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString)
+    const day = date.getDate()
+    const month = date.toLocaleString("default", { month: "short" })
+    const year = date.getFullYear()
+    return `${day} ${month} ${year}`
   }
 })
 
